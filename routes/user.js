@@ -3,16 +3,17 @@ var smtpTransport = require('nodemailer-smtp-transport');
 var async = require('async');
 var crypto = require('crypto');
 var User = require('../models/user');
+var secret = require('../secrets/secret');
 
 module.exports = (app, passport) => {
     app.get('/', (req, res, next) => {
-        res.render('index', { title: 'Index || Rate me' });
+        res.render('index', { title: 'Index || Experts App' });
     });
 
     app.get('/signup', ( req, res ) => {
         var errors = req.flash('error');
         console.log(errors);
-        res.render('user/signup', { title: 'Sign Up || Rate Me', messages: errors, hasErrors: errors.length > 0 });
+        res.render('user/signup', { title: 'Sign Up || Experts App', messages: errors, hasErrors: errors.length > 0 });
     });
 
     app.post('/signup', validate ,passport.authenticate('local.signup', {
@@ -22,7 +23,7 @@ module.exports = (app, passport) => {
     }));
     app.get('/login', ( req, res ) => {
         var errors = req.flash('error');
-        res.render('user/login', { title: 'Log In || Rate Me', messages: errors, hasErrors: errors.length > 0 });
+        res.render('user/login', { title: 'Log In || Experts App', messages: errors, hasErrors: errors.length > 0 });
     });
 
     app.post('/login', loginValidate ,passport.authenticate('local.login', {
@@ -32,7 +33,7 @@ module.exports = (app, passport) => {
     }));
 
     app.get('/home', (req, res) => {
-        res.render('home', {title: 'Home || RateMe'});
+        res.render('home', {title: 'Home || Experts App'});
     });
 
     app.get('/forgot', (req, res) => {
@@ -67,8 +68,13 @@ module.exports = (app, passport) => {
             // this function is to sent email to the user
             function(rand, user, callback) {
                 var smtpTransport = nodemailer.createTransport({
-                    service: 
-                })
+                    service: 'Gmail',
+                    auth: {
+                        user: secret.auth.user,
+                        pass: secret.auth.pass
+                    }
+                });
+                
             }
         ])
     });
