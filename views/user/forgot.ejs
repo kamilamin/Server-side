@@ -12,6 +12,25 @@
    </div><br>
     <p class="text-center">Please enter your email and a password reset link will be sent.</p>
     <div class="row signup">
+        <% if(hasErrors) {%>
+            <% for(var i = 0; i < messages.length; i++) {%>
+                <div class="alert alert-danger">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">
+                        &time;
+                    </a>
+                    <%= messages[i] %>
+                </div>
+            <% } %>
+        <% } %>
+
+        <% if(noErrors) {%>
+                <div class="alert alert-info">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">
+                        &time;
+                    </a>
+                    <%= info %>
+                </div>
+        <% } %>
 
         <form method="POST" action="/forgot">
             <div class="form-group input_group">

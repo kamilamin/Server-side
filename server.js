@@ -14,7 +14,7 @@ var flash = require('connect-flash');
 var app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/rateme');
+mongoose.connect('mongodb://localhost/expertsApp');
 
 require('./config/passport');
 require('./secrets/secret');

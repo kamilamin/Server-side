@@ -37,7 +37,10 @@ module.exports = (app, passport) => {
     });
 
     app.get('/forgot', (req, res) => {
-        res.render('user/forgot', {title: 'Request for password reset'});
+        var errors = req.flash('error');
+        var info = req.flash('info');
+        res.render('user/forgot', {title: 'Request for password reset', messages: errors, hasErrors: errors.length > 0,
+        info: info, noErrors: info.length > 0});
     });
 
     app.post('/forgot', (req, res, next) => {
@@ -74,10 +77,106 @@ module.exports = (app, passport) => {
                         pass: secret.auth.pass
                     }
                 });
-                
+                var mailOption = {
+                    to: user.email,
+                    from: 'Expert App' + '<' + secret.auth.user+'>',
+                    subject: 'Expert App Password Reset Token',
+                    text: 'You have requested for password reset token. \n\n' + 
+                        'Please click on the link to complete process. \n\n'+
+                        'http://localhost:3000/reset/'+rand+'\n\n'
+                };
+                smtpTransport.sendMail(mailOption, (err, response) => {
+                    req.flash('info', 'A Password reset token has been sent to '+ user.email);
+                    return callback(err, user);
+                });
             }
-        ])
+        ], (err) => {
+            if(err) {
+                return next(err);
+            }
+            res.redirect('/forgot');
+        });
     });
+    // validation if the token is valid or not
+    app.get('/reset/:token', (req, res) => {
+        
+                User.findOne({passwordResetToken: req.params.token, passwordResetExpires: {$gt: Date.now()}}, (err, user) => {
+                    if(!user){
+                        req.flash('error', 'Password reset token has expired or is invalid. Enter your email to get a new token.');
+                        return res.redirect('/forgot');
+                    }
+                    var errors = req.flash('error');
+                    var success = req.flash('success');
+                    res.render('user/reset', {title: 'Reset Your password', messages: errors, hasErrors: errors.length > 0, success: success, noErrors: success.length > 0});
+                });
+            });
+        
+            app.post('/reset/:token', (req, res) => {
+                async.waterfall([
+                    function(callback){
+                        User.findOne({passwordResetToken: req.params.token, passwordResetExpires: {$gt: Date.now()}}, (err, user) => {
+                            if(!user){
+                                req.flash('error', 'Password reset token has expired or is invalid. Enter your email to get a new token.');
+                                return res.redirect('/forgot');
+                            }
+        
+                            req.checkBody('password', 'Password is required').notEmpty();
+                            req.checkBody('password', 'Password not be less than 6 characters').isLength({min: 6});
+                            req.checkBody('password', 'Password must have atleast 1 Number and 1 Character').matches(/^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{6,}$/, "i");
+        
+                            var errors = req.validationErrors();
+                            if(req.body.password == req.body.cpassword){
+                                if(errors){
+                                    var messages = [];
+                                    errors.forEach((error) => {
+                                        messages.push(error.msg)
+                                    })
+                                    var errors = req.flash('error');
+                                    res.redirect('/reset/' + req.params.token);
+                                } else {
+                                    user.password = user.encryptPassword(req.body.password);
+                                    user.passwordResetToken = undefined;
+                                    user.passwordResetExpires = undefined;
+                                    user.save((err) => {
+                                        req.flash('Success', 'Your Password has been changed');
+                                        callback(err, user);
+                                    })
+                                }
+                            } else {
+                                req.flash('error', 'Password and Confirm Password are not equal.');
+                                res.redirect('/reset/' + req.params.token);
+                            }
+        
+                            // res.render('user/reset', {title: 'Reset Your password', messages: errors, hasErrors: errors.length > 0});
+                        });
+                    },
+                    function(user, callback) {
+                        var smtpTransport = nodemailer.createTransport({
+                            service: 'Gmail',
+                            auth: {
+                                user: secret.auth.user,
+                                pass: secret.auth.pass
+                            }
+                        });
+                        var mailOptions = {
+                            to: user.email,
+                            from: 'Expert App'+'<'+secret.auth.user+'>',
+                            subject: 'Your password is changed',
+                            text: 'This is a confirmation that your password is changed ' + user.email
+                        };
+        
+                        smtpTransport.sendMail(mailOptions, (err, res) => {
+                            callback(err, user);
+        
+                            var error = req.flash('error');
+                            var success = req.flash('success');
+        
+                            res.render('user/reset', {title: 'Reset Your password', messages: error, hasErrors: error.length > 0, success: success, noErrors: success.length > 0});
+        
+                        });
+                    }
+                ]);
+            });
 };
 
 
