@@ -140,7 +140,7 @@ module.exports = (app, passport) => {
                                     user.save((err) => {
                                         req.flash('Success', 'Your Password has been changed');
                                         callback(err, user);
-                                    })
+                                    });
                                 }
                             } else {
                                 req.flash('error', 'Password and Confirm Password are not equal.');
@@ -176,6 +176,10 @@ module.exports = (app, passport) => {
                         });
                     }
                 ]);
+            });
+            app.get('/logout', (req, res) => {
+                req.logout();
+                res.redirect('/');
             });
 };
 
