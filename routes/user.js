@@ -181,6 +181,18 @@ module.exports = (app, passport) => {
                 req.logout();
                 res.redirect('/');
             });
+            app.get('/addPatient', (req, res) => {
+                res.render('addPatient', {title: 'Add new Patient || Experts App'});
+            });
+            app.get('/viewPatient', (req, res) => {
+                res.render('viewPatient', {title: 'View Patient || Experts App'});
+            });
+            app.get('/reports', (req, res) => {
+                res.render('reports', {title: 'Reports || Experts App'});
+            });
+            app.get('/profile', (req, res) => {
+                res.render('profile', {title: 'Profile || Experts App'})
+            });
 };
 
 
