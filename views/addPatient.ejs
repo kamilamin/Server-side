@@ -1,1 +1,53 @@
-<h1>Add New Patient</h1>
+<% layout('layout2') %>
+
+<div id="wrapper">
+    
+    <% include partials/slidebar %>
+    
+    
+        <div id="page-content-wrapper">
+           <% include partials/navbar %>
+            <div class="container-fluid main_body">
+               <div class="ul_links">
+                   
+                </div>
+               
+               <div class="bodyDiv">
+                   <h3 style="text-align: center;">Register New Patient</h3>
+                        <form method="POST" action="/addPatient">
+                            <div>
+                                <label for="">Patient Name:</label>
+                                <input type="name" class="form-control" name="name" type="text" style="margin-bottom:20px;">
+                            </div>
+                            <div>
+                                    <label for="">Patient Gender:</label>
+                                    <input id="Gender" class="form-control" name="Gender" type="text" style="margin-bottom:20px;">
+                            </div>
+                            <div>
+                                    <label for="">Patient Date Of Birth:</label>
+                                    <input id="DOB" class="form-control" name="DOB" type="text" style="margin-bottom:20px;">
+                            </div>
+                            <div>
+                                    <label for="">Patient Address:</label>
+                                    <input id="address" class="form-control" name="address" type="text" style="margin-bottom:20px;">
+                            </div>
+                            <div>
+                                    <label for="">Doctor Appointed:</label>
+                                    <input id="appointment" class="form-control" name="appointment" type="text" style="margin-bottom:20px;">
+                            </div>
+                            <div>
+                                    <label for="">Patient Age:</label>
+                                    <input id="age" class="form-control" name="age" type="text" style="margin-bottom:20px;">
+                            </div>
+                            <div>
+                                    <label for="">Submit:</label>
+                                    <input id="submit" value="submit" class="form-control btn btn-primary" name="name" type="submit">
+                            </div>
+
+                        </form>
+                </div>
+                
+            </div>
+        </div>
+    
+    </div>

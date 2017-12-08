@@ -182,7 +182,7 @@ module.exports = (app, passport) => {
                 res.redirect('/');
             });
             app.get('/addPatient', (req, res) => {
-                res.render('addPatient', {title: 'Add new Patient || Experts App'});
+                res.render('addPatient', {title: 'Add new Patient || Experts App', user: req.user});
             });
             app.get('/viewPatient', (req, res) => {
                 res.render('viewPatient', {title: 'View Patient || Experts App'});
