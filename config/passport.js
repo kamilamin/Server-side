@@ -58,4 +58,17 @@ passport.use('local.login', new localStrategy({
         return done(null, user);
 
     });
+    // User.findOne({'email': email.split('.') == 'gmail.com'}, (err, user) => {
+    //     if(err){
+    //         return done(err);
+    //     };
+    //     var messages = [];
+    //     if(!user || !user.validPassword(password)) {
+    //         messages.push('Email Does Not Exist or Password Invalid');
+    //         return done(null, false, req.flash('error', messages));
+    //     }
+
+    //     return done(null, user);
+
+    // });
 }));

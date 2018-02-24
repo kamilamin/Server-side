@@ -193,6 +193,9 @@ module.exports = (app, passport) => {
             app.get('/profile', (req, res) => {
                 res.render('profile', {title: 'Profile || Experts App'})
             });
+            app.get('/admin', (req, res) => {
+                res.render('admin', {title: 'Admin Panel', user: req.user});
+            });
 };
 
 

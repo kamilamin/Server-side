@@ -6,9 +6,9 @@ var userSchema = mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String },
     role: {type: String, default: ''},
-    company: {
+    addPatient: {
         name: { type: String, default: '' },
-        image: { type: String, default: '' }
+        age: { type: String, default: '' }
     },
     passwordResetToken: { type: String, default: '' },
     passwordResetExpires: { type: Date, default: Date.now }
